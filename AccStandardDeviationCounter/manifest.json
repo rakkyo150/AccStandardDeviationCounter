@@ -1,0 +1,32 @@
+﻿{
+    "$schema": "https://raw.githubusercontent.com/bsmg/BSIPA-MetadataFileSchema/master/Schema.json",
+    "id": "AccStandardDeviationCounter",
+    "name": "AccStandardDeviationCounter",
+    "author": "Rakkyo",
+    "version": "0.0.1",
+    "description": "Adds a counter Showing the acc deviation",
+    "gameVersion": "1.16.2",
+    "dependsOn": {
+        "Counters+": "^2.2.1",
+        "BSIPA": "^4.1.6",
+        "BeatSaberMarkupLanguage": "^1.5.3"
+    },
+    "loadAfter": [ "Counters+" ],
+    "features": {
+        "CountersPlus.CustomCounter": {
+            "Name": "Acc Standard Deviation Counter",
+            "Description": "Shows the acc deviation",
+            "CounterLocation": "AccStandardDeviationCounter.AccStandardDeviationCounter",
+            "ConfigDefaults": {
+                "Enable": true,
+                "Position": "AboveCombo",
+                "Distance": 0
+            },
+            "BSML": {
+                "Resource": "AccStandardDeviationCounter.settings.bsml",
+                "Host": "AccStandardDeviationCounter.SettingsHandler",
+                "Icon": "AccStandardDeviationCounter.Images.icon.png"
+            }
+        }
+    }
+}
