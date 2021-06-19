@@ -3,7 +3,7 @@
     "id": "AccStandardDeviationCounter",
     "name": "AccStandardDeviationCounter",
     "author": "Rakkyo",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "Adds a counter Showing the acc deviation",
     "gameVersion": "1.16.2",
     "dependsOn": {
