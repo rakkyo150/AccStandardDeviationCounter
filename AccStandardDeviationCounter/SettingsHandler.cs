@@ -1,5 +1,4 @@
 ﻿using BeatSaberMarkupLanguage.Attributes;
-using System.Collections.Generic;
 
 namespace AccStandardDeviationCounter
 {

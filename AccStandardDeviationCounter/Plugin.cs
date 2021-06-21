@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using IPA;
+﻿using IPA;
 using IPA.Config.Stores;
 using IPALogger = IPA.Logging.Logger;
 
@@ -12,9 +9,9 @@ namespace AccStandardDeviationCounter
     {
         internal static Plugin Instance { get; private set; }
         internal static string Name => "AccStandardDeviationCounter";
-        
+
         [Init]
-        public void Init(IPALogger logger,IPA.Config.Config config)
+        public void Init(IPALogger logger, IPA.Config.Config config)
         {
             Configuration.Instance = config.Generated<Configuration>();
             Instance = this;
@@ -35,9 +32,9 @@ namespace AccStandardDeviationCounter
         #endregion
 
         [OnEnable]
-        public void OnEnable(){}
+        public void OnEnable() { }
 
         [OnDisable]
-        public void OnDisable(){}
+        public void OnDisable() { }
     }
 }
