@@ -2,7 +2,7 @@
 
 # AccStandardDeviationCounter
 
-中心精度の標準偏差を表示する[CountersPlus](https://github.com/rynan4818/tournament_overlay)のカスタムカウンターです。
+中心精度の標準偏差を表示する[CountersPlus](https://github.com/Caeden117/CountersPlus)のカスタムカウンターです。
 
 ![サンプル](Images/sample.jpg)
 
@@ -14,7 +14,7 @@
 - [CounterPlus](https://github.com/Caeden117/CountersPlus)
 
 ## インストール方法
-1. [Releases]()からAccStandardDeviationCounter.dllをダウンロード
+1. [Releases](https://github.com/rakkyo150/AccStandardDeviationCounter/releases)からAccStandardDeviationCounter.dllをダウンロード
 2. AccStandardDeviationCounter.dllをBeat Saberのインストールフォルダ下のPluginsフォルダに追加
 
 Steam版Beat Saberの場合、Pluginフォルダの場所は<br>
