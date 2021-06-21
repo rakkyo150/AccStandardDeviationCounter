@@ -1,14 +1,14 @@
-﻿using CountersPlus.Counters.Custom;
-using CountersPlus.Counters.Interfaces;
-using System;
-using System.Globalization;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using CountersPlus.Counters.Custom;
+using CountersPlus.Counters.Interfaces;
 using TMPro;
 using UnityEngine;
 
 namespace AccStandardDeviationCounter
 {
-    public class AccStandardDeviationCounter:BasicCustomCounter,INoteEventHandler
+    public class AccStandardDeviationCounter : BasicCustomCounter, INoteEventHandler
     {
         private int _noteLeft = 0;
         private int _noteRight = 0;
@@ -24,8 +24,8 @@ namespace AccStandardDeviationCounter
         private List<double> _listRight = new List<double>();
         private List<double> _listBoth = new List<double>();
 
-        private double _standardDeviationLeft=0;
-        private double _standardDeviationRight=0;
+        private double _standardDeviationLeft = 0;
+        private double _standardDeviationRight = 0;
         private double _standardDeviationBoth;
 
         private TMP_Text _counterLeft;
@@ -46,7 +46,7 @@ namespace AccStandardDeviationCounter
                 label.fontSize = Configuration.Instance.LabelFontSize;
             }
 
-            Vector3 leftOffset = new Vector3(x, y - 0.2f,z);
+            Vector3 leftOffset = new Vector3(x, y - 0.2f, z);
             TextAlignmentOptions leftAlign = TextAlignmentOptions.Top;
             if (Configuration.Instance.SeparateSaber)
             {
@@ -62,20 +62,20 @@ namespace AccStandardDeviationCounter
 
             _counterLeft = CanvasUtility.CreateTextFromSettings(Settings, leftOffset);
             _counterLeft.lineSpacing = -26;
-            _counterLeft.fontSize=Configuration.Instance.FigureFontSize;
+            _counterLeft.fontSize = Configuration.Instance.FigureFontSize;
             _counterLeft.text = defaultValue;
-            _counterLeft.alignment = leftAlign;           
+            _counterLeft.alignment = leftAlign;
         }
 
         public void OnNoteMiss(NoteData data) { }
 
-        public void OnNoteCut(NoteData data,NoteCutInfo info)
+        public void OnNoteCut(NoteData data, NoteCutInfo info)
         {
             if (data.colorType == ColorType.None || !info.allIsOK) return;
             UpdateText(info.swingRatingCounter, info.cutDistanceToCenter, info.saberType);
         }
 
-        public void UpdateText(ISaberSwingRatingCounter v,float distanceToCenter,SaberType saberType)
+        public void UpdateText(ISaberSwingRatingCounter v, float distanceToCenter, SaberType saberType)
         {
             ScoreModel.RawScoreWithoutMultiplier(v, distanceToCenter, out int beforecut, out int aftercut, out int acc);
 
@@ -100,7 +100,7 @@ namespace AccStandardDeviationCounter
 
             _averageBoth = (_totalLeft + _totalRight) / (_noteLeft + _noteRight);
             _standardDeviationBoth = StandatdDeviation(_listBoth, _averageBoth, (_noteLeft + _noteRight));
-            
+
             UpdateText();
         }
 
@@ -114,16 +114,16 @@ namespace AccStandardDeviationCounter
             else _counterLeft.text = Format(_standardDeviationBoth, Configuration.Instance.DecimalPrecision);
         }
 
-        private string Format(double StandardDeviation,int DecimalPrecision)
+        private string Format(double StandardDeviation, int DecimalPrecision)
         {
             return StandardDeviation.ToString($"F{DecimalPrecision}", CultureInfo.InvariantCulture);
         }
 
-        private double StandatdDeviation(List<double> AccList,double average,int notes)
+        private double StandatdDeviation(List<double> AccList, double average, int notes)
         {
             double beforeDividedTotal = 0;
 
-            foreach(double acc in AccList)
+            foreach (double acc in AccList)
             {
                 beforeDividedTotal += Math.Pow(acc - average, 2);
             }
@@ -131,6 +131,6 @@ namespace AccStandardDeviationCounter
             return Math.Sqrt(beforeDividedTotal / notes);
         }
 
-        public override void CounterDestroy(){}
+        public override void CounterDestroy() { }
     }
 }
