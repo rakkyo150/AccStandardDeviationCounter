@@ -1,24 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using CountersPlus.Counters.Custom;
 using CountersPlus.Counters.Interfaces;
 using TMPro;
 using UnityEngine;
+using Zenject;
 
 namespace AccStandardDeviationCounter
 {
     public class AccStandardDeviationCounter : BasicCustomCounter, INoteEventHandler
     {
-        private int _noteLeft = 0;
-        private int _noteRight = 0;
+        [Inject] ScoreController scoreController;
 
         private double _averageLeft;
         private double _averageRight;
+        private double _averageBoth;
 
         private double _totalLeft = 0;
         private double _totalRight = 0;
-        private double _averageBoth;
 
         private List<double> _listLeft = new List<double>();
         private List<double> _listRight = new List<double>();
@@ -65,43 +66,101 @@ namespace AccStandardDeviationCounter
             _counterLeft.fontSize = Configuration.Instance.FigureFontSize;
             _counterLeft.text = defaultValue;
             _counterLeft.alignment = leftAlign;
+
+            scoreController.scoringForNoteFinishedEvent += ScoreController_scoringForNoteFinishedEvent;
         }
 
         public void OnNoteMiss(NoteData data) { }
 
-        public void OnNoteCut(NoteData data, NoteCutInfo info)
+        public void OnNoteCut(NoteData data, NoteCutInfo info) { }
+
+        private void ScoreController_scoringForNoteFinishedEvent(ScoringElement scoringElement)
         {
-            if (data.colorType == ColorType.None || !info.allIsOK) return;
-            UpdateText(info.swingRatingCounter, info.cutDistanceToCenter, info.saberType);
-        }
-
-        public void UpdateText(ISaberSwingRatingCounter v, float distanceToCenter, SaberType saberType)
-        {
-            ScoreModel.RawScoreWithoutMultiplier(v, distanceToCenter, out int beforecut, out int aftercut, out int acc);
-
-            _listBoth.Add(acc);
-
-            if (saberType == SaberType.SaberA)
+            if (scoringElement is GoodCutScoringElement goodCut)
             {
-                _listLeft.Add(acc);
-                _totalLeft += acc;
-                _noteLeft++;
-                _averageLeft = _totalLeft / _noteLeft;
-                _standardDeviationLeft = StandatdDeviation(_listLeft, _averageLeft, _noteLeft);
-            }
-            else
-            {
-                _listRight.Add(acc);
-                _totalRight += acc;
-                _noteRight++;
-                _averageRight = _totalRight / _noteRight;
-                _standardDeviationRight = StandatdDeviation(_listRight, _averageRight, _noteRight);
-            }
+                var cutScoreBuffer = goodCut.cutScoreBuffer;
 
-            _averageBoth = (_totalLeft + _totalRight) / (_noteLeft + _noteRight);
-            _standardDeviationBoth = StandatdDeviation(_listBoth, _averageBoth, (_noteLeft + _noteRight));
+                var beforeCut = cutScoreBuffer.beforeCutScore;
+                var afterCut = cutScoreBuffer.afterCutScore;
+                var cutDistance = cutScoreBuffer.centerDistanceCutScore;
+                var fixedScore = cutScoreBuffer.noteScoreDefinition.fixedCutScore;
 
-            UpdateText();
+                if (Configuration.Instance.SeparateSaber)
+                {
+                    var totalAccForHand = goodCut.noteData.colorType == ColorType.ColorA
+                        ? _listLeft
+                        : _listRight;
+
+                    double averageAcc = goodCut.noteData.colorType == ColorType.ColorA
+                        ? _averageLeft
+                        : _averageRight;
+
+                    /*
+                    これは変数の更新はできないっぽい
+                    double standardDeviation= goodCut.noteData.colorType == ColorType.ColorA
+                        ? _standardDeviationLeft
+                        : _standardDeviationRight;
+                    */
+
+                    switch (goodCut.noteData.scoringType)
+                    {
+                        case NoteData.ScoringType.Normal:
+                            totalAccForHand.Add(cutDistance);
+                            _listBoth.Add(cutDistance);
+                            break;
+                        case NoteData.ScoringType.BurstSliderHead when Configuration.Instance.IncludeChains:
+                            totalAccForHand.Add(cutDistance);
+                            _listBoth.Add(cutDistance);
+                            break;
+
+                            // Chain links are not being tracked at all because they give a fixed 20 score for every hit.
+                            /*case NoteData.ScoringType.BurstSliderElement when Settings.IncludeChains:
+                                totalScoresForHand[2] += fixedScore;
+                                cutCountForHand[2]++;
+                                break;*/
+
+
+                    }
+
+                    averageAcc = totalAccForHand.Sum() / totalAccForHand.Count;
+                    if (goodCut.noteData.colorType == ColorType.ColorA)
+                    {
+                        _standardDeviationLeft = StandatdDeviation(totalAccForHand, averageAcc, totalAccForHand.Count);
+                    }
+                    else
+                    {
+                        _standardDeviationRight = StandatdDeviation(totalAccForHand, averageAcc, totalAccForHand.Count);
+                    }
+
+                    UpdateText();
+                }
+                else
+                {
+                    switch (goodCut.noteData.scoringType)
+                    {
+                        case NoteData.ScoringType.Normal:
+                            _listBoth.Add(cutDistance);
+                            break;
+                        case NoteData.ScoringType.BurstSliderHead when Configuration.Instance.IncludeChains:
+                            _listBoth.Add(cutDistance);
+                            break;
+
+                            // Chain links are not being tracked at all because they give a fixed 20 score for every hit.
+                            /*case NoteData.ScoringType.BurstSliderElement when Settings.IncludeChains:
+                                totalScoresForHand[2] += fixedScore;
+                                cutCountForHand[2]++;
+                                break;*/
+
+
+                    }
+
+
+                    _averageBoth = _listBoth.Sum() / _listBoth.Count;
+                    _standardDeviationBoth = StandatdDeviation(_listBoth, _averageBoth, _listBoth.Count);
+
+                    UpdateText();
+                }
+            }
         }
 
         private void UpdateText()
