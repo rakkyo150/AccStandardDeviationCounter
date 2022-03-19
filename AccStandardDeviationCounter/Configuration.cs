@@ -15,6 +15,7 @@ namespace AccStandardDeviationCounter
         public virtual float OffsetX { get; set; } = 0f;
         public virtual float OffsetY { get; set; } = 0f;
         public virtual float OffsetZ { get; set; } = 0f;
+        public virtual bool IncludeChains { get; set; } = false;
     }
 
 

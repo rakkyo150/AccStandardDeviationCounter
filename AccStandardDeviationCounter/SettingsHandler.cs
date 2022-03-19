@@ -83,5 +83,15 @@ namespace AccStandardDeviationCounter
                 Configuration.Instance.OffsetZ = value;
             }
         }
+
+        [UIValue("IncludeChains")]
+        public bool IncludeChains
+        {
+            get => Configuration.Instance.IncludeChains;
+            set
+            {
+                Configuration.Instance.IncludeChains= value;
+            }
+        }
     }
 }
