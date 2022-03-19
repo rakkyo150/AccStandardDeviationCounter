@@ -1,9 +1,9 @@
-﻿using System;
+﻿using CountersPlus.Counters.Custom;
+using CountersPlus.Counters.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using CountersPlus.Counters.Custom;
-using CountersPlus.Counters.Interfaces;
 using TMPro;
 using UnityEngine;
 using Zenject;
@@ -106,11 +106,9 @@ namespace AccStandardDeviationCounter
                     {
                         case NoteData.ScoringType.Normal:
                             totalAccForHand.Add(cutDistance);
-                            _listBoth.Add(cutDistance);
                             break;
                         case NoteData.ScoringType.BurstSliderHead when Configuration.Instance.IncludeChains:
                             totalAccForHand.Add(cutDistance);
-                            _listBoth.Add(cutDistance);
                             break;
 
                             // Chain links are not being tracked at all because they give a fixed 20 score for every hit.
@@ -118,8 +116,6 @@ namespace AccStandardDeviationCounter
                                 totalScoresForHand[2] += fixedScore;
                                 cutCountForHand[2]++;
                                 break;*/
-
-
                     }
 
                     averageAcc = totalAccForHand.Sum() / totalAccForHand.Count;
@@ -150,10 +146,7 @@ namespace AccStandardDeviationCounter
                                 totalScoresForHand[2] += fixedScore;
                                 cutCountForHand[2]++;
                                 break;*/
-
-
                     }
-
 
                     _averageBoth = _listBoth.Sum() / _listBoth.Count;
                     _standardDeviationBoth = StandatdDeviation(_listBoth, _averageBoth, _listBoth.Count);
