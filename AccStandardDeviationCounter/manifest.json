@@ -17,6 +17,7 @@
             "Name": "Acc Standard Deviation Counter",
             "Description": "Shows the acc deviation",
             "CounterLocation": "AccStandardDeviationCounter.AccStandardDeviationCounter",
+            "MultiplayerReady": true,
             "ConfigDefaults": {
                 "Enable": true,
                 "Position": "AboveCombo",
